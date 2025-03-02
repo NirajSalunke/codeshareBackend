@@ -22,11 +22,11 @@ func main() {
 	// CORS Configuration
 	r.Use(cors.New(cors.Config{
 		AllowAllOrigins: true,
-		AllowOrigins:    []string{"*"}, // Allow frontend origin
-		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:    []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:   []string{"Content-Length"},
-		MaxAge:          12 * time.Hour,
+		// AllowOrigins:    []string{"*"}, // Allow frontend origin
+		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:  []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders: []string{"Content-Length"},
+		MaxAge:        12 * time.Hour,
 	}))
 
 	r.OPTIONS("/*path", func(c *gin.Context) {
