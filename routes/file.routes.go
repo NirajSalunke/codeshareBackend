@@ -6,6 +6,7 @@ import (
 )
 
 func LoadFileRoutes(r *gin.RouterGroup) {
+	r.GET("/:id", controllers.GetFileById)
 	r.POST("/create/:id", controllers.CreateFile)
 	r.PUT("/:id", controllers.UpdateFile)
 	r.DELETE("/:id", controllers.DeleteFile)
