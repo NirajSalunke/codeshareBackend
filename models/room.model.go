@@ -8,8 +8,9 @@ import (
 
 type Room struct {
 	gorm.Model
-	OwnerID   *uint      `gorm:"index" json:"ownerId"`
-	Password  string     `gorm:"not null" json:"password"`
+	OwnerID   string     `gorm:"default:"" json:"ownerId"`
+	Name      string     `gorm:"not null;" json:"name"`
+	Password  string     `gorm:"" json:"password"`
 	IsPrivate bool       `gorm:"default:false" json:"isPrivate"`
 	ExpiresAt *time.Time `gorm:"index" json:"expiresAt"`
 	Files     []File     `gorm:"not null" json:"files"`

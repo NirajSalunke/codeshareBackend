@@ -32,14 +32,14 @@ func GetAllRooms(c *gin.Context) {
 func CreateNewRoom(c *gin.Context) {
 	var room models.Room
 
-	if err := c.Bind(&room); err != nil {
+	if err := c.BindJSON(&room); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
 			"error":   err.Error(),
 		})
 		return
 	}
-
+	// fmt.Printf("%+v", room)
 	hashedPass, err := helpers.HashPassword(room.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -70,9 +70,11 @@ func CreateNewRoom(c *gin.Context) {
 }
 
 func DeleteRoom(c *gin.Context) {
-	id := c.Param("id")
+	name := c.Param("name")
 
-	res := config.DB.Delete(&models.Room{}, id)
+	res := config.DB.Delete(&models.Room{}, models.Room{
+		Name: name,
+	})
 	if res.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -86,11 +88,13 @@ func DeleteRoom(c *gin.Context) {
 	})
 }
 
-func GetRoomById(c *gin.Context) {
-	id := c.Param("id")
+func GetRoomByName(c *gin.Context) {
+	name := c.Param("name")
 	var room models.Room
 
-	if res := config.DB.Preload("Files").First(&room, id); res.Error != nil {
+	if res := config.DB.Preload("Files").First(&room, models.Room{
+		Name: name,
+	}); res.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
 			"error":   "Room not found",
@@ -104,7 +108,7 @@ func GetRoomById(c *gin.Context) {
 }
 
 func UpdateRoom(c *gin.Context) {
-	id := c.Param("id")
+	name := c.Param("name")
 	var room models.Room
 	if err := c.Bind(&room); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -115,7 +119,9 @@ func UpdateRoom(c *gin.Context) {
 	}
 
 	var currRoom models.Room
-	if res := config.DB.Preload("Files").First(&currRoom, id); res.Error != nil {
+	if res := config.DB.Preload("Files").First(&currRoom, models.Room{
+		Name: name,
+	}); res.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
 			"error":   "Room not found",
@@ -137,9 +143,11 @@ func UpdateRoom(c *gin.Context) {
 }
 
 func GetAllFilesOfRoom(c *gin.Context) {
-	id := c.Param("id")
+	name := c.Param("name")
 	var room models.Room
-	if res := config.DB.Preload("Files").First(&room, id); res.Error != nil {
+	if res := config.DB.Preload("Files").First(&room, models.Room{
+		Name: name,
+	}); res.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
 			"error":   "Room not found",

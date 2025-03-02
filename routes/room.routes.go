@@ -6,11 +6,12 @@ import (
 )
 
 func LoadRoomRoutes(r *gin.RouterGroup) {
+
 	r.GET("/", controllers.GetAllRooms)
-	r.GET("/:id", controllers.GetRoomById)
-	r.GET("/:id/files", controllers.GetAllFilesOfRoom)
+	r.GET("/:name", controllers.GetRoomByName)
+	r.GET("/:name/files", controllers.GetAllFilesOfRoom)
 	r.POST("/", controllers.CreateNewRoom)
-	r.PATCH("/:id", controllers.UpdateRoom)
-	r.DELETE("/:id", controllers.DeleteRoom)
+	r.PATCH("/:name", controllers.UpdateRoom)
+	r.DELETE("/:name", controllers.DeleteRoom)
 
 }
