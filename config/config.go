@@ -15,7 +15,6 @@ var DB *gorm.DB
 func LoadEnv() {
 	if err := godotenv.Load(); err != nil {
 		helpers.PrintRed("Error:- Failed to Load env.")
-		log.Fatal(err.Error())
 	}
 }
 

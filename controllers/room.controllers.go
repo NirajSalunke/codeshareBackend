@@ -107,6 +107,45 @@ func GetRoomByName(c *gin.Context) {
 	})
 }
 
+func CheckRoomPass(c *gin.Context) {
+	var input struct {
+		Name     string `json:"name"`
+		Password string `json:"password"`
+	}
+
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	var neededRoom models.Room
+	if res := config.DB.Preload("Files").First(&neededRoom, models.Room{
+		Name: input.Name,
+	}); res.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"error":   "Room not found",
+		})
+		return
+	}
+
+	if !helpers.CheckPasswordHash(input.Password, neededRoom.Password) {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"error":   "Incorrect password",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"room":    neededRoom,
+	})
+}
+
 func UpdateRoom(c *gin.Context) {
 	name := c.Param("name")
 	var room models.Room
